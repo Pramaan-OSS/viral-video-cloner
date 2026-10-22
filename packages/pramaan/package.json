@@ -1,0 +1,20 @@
+{
+  "name": "@hypit/pramaan",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE",
+  "exports": {
+    ".": "./src/index.ts",
+    "./fake": "./src/fake.ts"
+  },
+  "devDependencies": {
+    "@hypit/hypit": "workspace:*",
+    "@types/node": "24.10.1",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "@pramaan/sdk": "0.1.0"
+  }
+}
