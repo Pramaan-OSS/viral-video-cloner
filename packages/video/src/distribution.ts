@@ -57,6 +57,7 @@ export function createVideoDistribution(options: VideoDistributionOptions = {}):
         // here by hand for opt-in local alignment.
         "pramaan.default": {
           use: "@hypit/provider-pramaan",
+          config: { apiKey: { store: "local", key: "PRAMAAN_API_KEY" } },
         },
         "media.local": {
           use: "@hypit/media-local",

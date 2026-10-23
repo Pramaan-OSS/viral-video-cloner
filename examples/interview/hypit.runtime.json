@@ -8,7 +8,10 @@
   },
   "endpoints": {
     "pramaan.default": {
-      "use": "@hypit/provider-pramaan"
+      "use": "@hypit/provider-pramaan",
+      "config": {
+        "apiKey": { "store": "local", "key": "PRAMAAN_API_KEY" }
+      }
     },
     "media.local": {
       "use": "@hypit/media-local",
