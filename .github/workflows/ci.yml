@@ -19,7 +19,7 @@ env:
 jobs:
   check:
     name: ${{ matrix.check }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     strategy:
       fail-fast: false
@@ -38,9 +38,15 @@ jobs:
       - if: matrix.check != 'typecheck'
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg fonts-dejavu-core=2.37-8 fontconfig
+          fc-match sans-serif
           ffmpeg -version
           ffprobe -version
+      - name: Allow the pinned test browser to use its Linux sandbox
+        if: matrix.check == 'test'
+        # Ubuntu's AppArmor restriction blocks the downloaded Chrome for Testing.
+        # Keep Chrome's sandbox enabled; permit user namespaces on this test runner.
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - if: matrix.check == 'test'
         uses: astral-sh/setup-uv@v6
         with:
@@ -48,9 +54,10 @@ jobs:
           enable-cache: true
           cache-dependency-glob: packages/provider-image-opencv-local/runtime/uv.lock
       - if: matrix.check == 'test'
-        run: |
-          uv sync --project packages/provider-image-opencv-local/runtime --frozen --python "$(cat .python-version)"
-          node --import tsx scripts/ci-browsers.mjs
+        run: uv sync --project packages/provider-image-opencv-local/runtime --frozen --python "$(cat .python-version)"
+      - name: Install package-pinned capture Chrome and HTML headless shell
+        if: matrix.check == 'test'
+        run: node --import tsx scripts/ci-browsers.mjs
       - if: matrix.check == 'test'
         env:
           HYPIT_BROWSER_TESTS: "1"
