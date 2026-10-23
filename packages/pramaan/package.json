@@ -15,6 +15,6 @@
     "typescript": "5.9.3"
   },
   "dependencies": {
-    "@pramaan/sdk": "0.1.0"
+    "@pramaan/sdk": "0.1.4"
   }
 }

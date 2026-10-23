@@ -1569,8 +1569,8 @@ importers:
   packages/pramaan:
     dependencies:
       '@pramaan/sdk':
-        specifier: 0.1.0
-        version: 0.1.0
+        specifier: 0.1.4
+        version: 0.1.4
     devDependencies:
       '@hypit/hypit':
         specifier: workspace:*
@@ -3573,8 +3573,8 @@ packages:
   '@oxc-project/types@0.154.0':
     resolution: {integrity: sha512-KYOUGQFlLWR+s4QMV2Q9ko38TZm7EdO87Qm7rvZLqk/webse/cDjtyxKhg/47l0byCbs/k46LT8qc4PKjAikzA==}
 
-  '@pramaan/sdk@0.1.0':
-    resolution: {integrity: sha512-lG2XvH/r6XPvorhzhzsWZuniuKbLePT69UbUnpVkev7n0s4Zh+9Y0URkV0/cG1chcrcGerHhtHLbsMApFUfpsw==}
+  '@pramaan/sdk@0.1.4':
+    resolution: {integrity: sha512-Ty0DDPsfVntRYTOkYYqkj0xn8qEHmvlZf3UDhGABpo9NbeF039PNFU+uSZd6Fw+IPwLLtDh3VBL/0h5syvcNqQ==}
 
   '@puppeteer/browsers@3.2.2':
     resolution: {integrity: sha512-q2BU4YfO9h/Wt7IcWPcggpOOqLk2Tbs1hDwolvKZrweRjy751OJBKMN9zO5bfD0pzU7X/tvKw/exQds4pM/LOg==}
@@ -5643,7 +5643,7 @@ snapshots:
 
   '@oxc-project/types@0.154.0': {}
 
-  '@pramaan/sdk@0.1.0': {}
+  '@pramaan/sdk@0.1.4': {}
 
   '@puppeteer/browsers@3.2.2':
     dependencies:
