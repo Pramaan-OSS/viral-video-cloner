@@ -20,7 +20,7 @@ jobs:
   check:
     name: ${{ matrix.check }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 40
     strategy:
       fail-fast: false
       matrix:
@@ -38,7 +38,7 @@ jobs:
       - if: matrix.check != 'typecheck'
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg fonts-dejavu-core=2.37-8 fontconfig
+          sudo apt-get install -y --no-install-recommends -o Acquire::Retries=3 ffmpeg fonts-dejavu-core=2.37-8 fontconfig
           fc-match sans-serif
           ffmpeg -version
           ffprobe -version
