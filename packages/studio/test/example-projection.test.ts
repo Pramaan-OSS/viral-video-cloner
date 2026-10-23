@@ -1,4 +1,10 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
+import { globSync } from "node:fs";
+import { copyFile, mkdir, mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
+import sharp from "sharp";
 import test from "node:test";
 import ts from "typescript";
 import { createVideoDistribution } from "@hypit/video";
@@ -59,8 +65,28 @@ test("the shipped semantic-composition example opens in the Studio projection", 
  * shipped example that uses the family packages still opens, with placeholders.
  */
 test("a family-package production defers unbuilt generation instead of failing", async (t) => {
-  const exampleRoot = `${repositoryRoot}examples/ranking-football/`;
-  const runPath = `${exampleRoot}reference.svrun`;
+  const sourceRoot = `${repositoryRoot}examples/ranking-football/`;
+  const exampleRoot = await mkdtemp(join(tmpdir(), "video-example-projection-"));
+  t.after(() => rm(exampleRoot, { recursive: true, force: true }));
+  // Authored sources ship; private example media does not. Build disposable
+  // synthetic assets so this compilation check works in the public archive.
+  for (const pattern of ["**/*.svml", "**/*.svs", "**/*.svrun"]) {
+    for (const file of globSync(pattern, { cwd: sourceRoot })) {
+      await mkdir(dirname(join(exampleRoot, file)), { recursive: true });
+      await copyFile(join(sourceRoot, file), join(exampleRoot, file));
+    }
+  }
+  const source = await readFile(join(exampleRoot, "reference.svml"), "utf8");
+  await mkdir(join(exampleRoot, "assets"));
+  for (const [, asset] of source.matchAll(/src="\.\/assets\/([^"]+)"/gu)) {
+    const path = join(exampleRoot, "assets", asset!);
+    if (/\.jpe?g$/u.test(path)) {
+      await sharp({ create: { width: 64, height: 64, channels: 3, background: "#6688aa" } }).jpeg().toFile(path);
+    } else {
+      execFileSync("ffmpeg", ["-v", "error", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", "1", path]);
+    }
+  }
+  const runPath = join(exampleRoot, "reference.svrun");
   const domain = await loadStudioDomain({ run: runPath, workspaceRoot: exampleRoot,
     packageRoot: repositoryRoot, distribution: createVideoDistribution() });
   const registry = await loadStudioCompanionRegistry({ distributionPackageRoot: repositoryRoot, sourcePackages: domain.packages });

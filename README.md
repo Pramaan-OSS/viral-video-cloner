@@ -1,3 +1,5 @@
+[![CI](https://github.com/Pramaan-OSS/viral-video-cloner/actions/workflows/ci.yml/badge.svg)](https://github.com/Pramaan-OSS/viral-video-cloner/actions/workflows/ci.yml)
+
 <p align="center"><strong>Viral Video Cloner</strong></p>
 <h3 align="center">Clone any viral video with AI agents</h3>
 <p align="center">1 command, 100 variants, 100M views.</p>

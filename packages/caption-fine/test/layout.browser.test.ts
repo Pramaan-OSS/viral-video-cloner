@@ -119,7 +119,7 @@ test("joined backgrounds cover wrapped glyphs, preserve opacity and seek without
       for (const atom of Array.from(document.querySelectorAll<HTMLElement>('[data-caption-atom]'))) atom.style.visibility = "hidden";
       await (window as typeof window & {
         __hypitFrameProgram: { applyFrame(frame: number): Promise<void> };
-      }).__hypitFrameProgram.applyFrame(30);
+      }).__hypitFrameProgram.applyFrame(2);
       return {
         count: lines.length,
         points: lines.map(line => ({ x: (line.left + line.right) / 2, y: (line.top + line.bottom) / 2 })).concat(

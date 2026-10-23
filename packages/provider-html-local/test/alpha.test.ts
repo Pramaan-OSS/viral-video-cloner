@@ -17,6 +17,7 @@ import { rasterizeHtmlProgram, rasterizeHtmlFrames } from "../src/index.js";
 test("transparent normalized media composites through an explicit Visual Clip in Chrome", {
   skip: process.env.HYPIT_BROWSER_TESTS !== "1",
 }, async () => {
+  const browser = process.env.HYPIT_TEST_CHROME_PATH === undefined ? {} : { chromePath: process.env.HYPIT_TEST_CHROME_PATH };
   const directory = process.env.HYPIT_ALPHA_PROOF_DIR ?? await mkdtemp(join(tmpdir(), "hypit-alpha-render-"));
   await mkdir(directory, { recursive: true });
   try {
@@ -54,7 +55,7 @@ test("transparent normalized media composites through an explicit Visual Clip in
     const brollVisual = projectVisualTrack(space, finalizeVisualTrack(items, header, space));
     const document = compileHtmlProgram(sealComposition({ id: "alpha-proof",
       canvas: { width: 192, height: 64, clearColor: "#143cdc" }, tracks: [speechVisual, brollVisual] }), space);
-    const rendered = await rasterizeHtmlProgram({ program: document }, { resources, workers: 2, quality: "high", processTimeoutMs: 120_000 });
+    const rendered = await rasterizeHtmlProgram({ program: document }, { ...browser, resources, workers: 2, quality: "high", processTimeoutMs: 120_000 });
     const video = await writeTestArtifact(resources, rendered.artifact, join(directory, "speech-and-broll.mp4"));
     const pixels = ffmpegBytes(["-i", video, "-pix_fmt", "rgb24", "-f", "rawvideo", "pipe:1"]);
     assert.equal(pixels.length, 192 * 64 * 3 * 12);
@@ -67,7 +68,7 @@ test("transparent normalized media composites through an explicit Visual Clip in
       close(pixel(f, left + 32, 32), [240, 20, 20]);
       close(pixel(f, left + 60, 32), [130, 40, 120]);
     }
-    const snapshots = await rasterizeHtmlFrames({ program: document, frames: [0, 11] }, { resources, workers: 2 });
+    const snapshots = await rasterizeHtmlFrames({ program: document, frames: [0, 11] }, { ...browser, resources, workers: 2 });
     for (const snapshot of snapshots) {
       const pixels = await sharp((await resources.get(snapshot.resource))!).removeAlpha().raw().toBuffer();
       const at = (x: number, y: number) => [...pixels.subarray((y * 192 + x) * 3, (y * 192 + x) * 3 + 3)];

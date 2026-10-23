@@ -60,10 +60,10 @@ if (suite === undefined) {
  * runner prints nothing more and the CI job holds its runner until the six-hour ceiling. This
  * bound turns that into an ordinary failure naming the test.
  */
-const testTimeoutMs = 120_000;
+const testTimeoutMs = name === "runtime-scale" ? 600_000 : 120_000;
 
 const result = spawnSync(process.execPath, [
-  "--import", "tsx", "--test", `--test-timeout=${testTimeoutMs}`, ...files,
+  "--import", "tsx", "--test", "--test-concurrency=4", `--test-timeout=${testTimeoutMs}`, ...files,
 ], {
   stdio: "inherit",
   windowsHide: true,

@@ -13,11 +13,13 @@ import { createGreetingBuild, manifest, capabilities, producers, types } from ".
 import { statePath } from "../src/config.js";
 import { superviseBuilds } from "../src/supervisor.js";
 
+const scale = process.env.HYPIT_RUNTIME_SCALE_TESTS === "1";
+const progressTimeoutMs = scale ? 300_000 : 90_000;
 const distribution = fileURLToPath(new URL("../../../", import.meta.url));
 async function until(predicate: () => boolean | Promise<boolean>): Promise<void> {
-  const deadline = Date.now() + 90_000;
+  const deadline = Date.now() + progressTimeoutMs;
   while (!await predicate()) {
-    if (Date.now() >= deadline) throw new Error("Expected concurrency progress within 90 seconds");
+    if (Date.now() >= deadline) throw new Error(`Expected concurrency progress within ${progressTimeoutMs / 1000} seconds`);
     await pause(25);
   }
 }
@@ -25,12 +27,12 @@ async function until(predicate: () => boolean | Promise<boolean>): Promise<void>
 // Ordinary regressions exercise queueing and fully concurrent submissions without making
 // every package test compete with a thousand-Build load experiment. The scale suite uses
 // the same production path and assertions, and runs by itself through test/run.mjs.
-const scenarios = process.env.HYPIT_RUNTIME_SCALE_TESTS === "1"
+const scenarios = scale
   ? [{ count: 1000, capacity: 1000 }]
   : [{ count: 24, capacity: 8 }, { count: 24, capacity: 24 }];
 
 for (const scenario of scenarios) {
-  test(`${scenario.count} Builds advance local work while remote capacity is ${scenario.capacity}`, { timeout: 120_000 }, async (t) => {
+  test(`${scenario.count} Builds advance local work while remote capacity is ${scenario.capacity}`, { timeout: scale ? 600_000 : 120_000 }, async (t) => {
     const setupAt = Date.now();
     const root = await mkdtemp(join(tmpdir(), "hypit-many-builds-"));
     const dataRoot = join(root, "runtime");

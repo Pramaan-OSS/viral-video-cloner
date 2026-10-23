@@ -139,7 +139,8 @@ try {
   <text:Value id="line">Welcome back to the show.</text:Value>
   <vid:Video id="boat" prompt={videoPrompt} resolution="720p" aspect-ratio="16:9" duration="6"/>
   <img:Image id="chair" prompt={imagePrompt} aspect-ratio="1:1" resolution="2K" output-format="png"/>
-  <say:Speak id="line-1" speech={line} voice="neutral"/>
+  <text:Value id="voice">neutral</text:Value>
+  <say:Speak id="line-1" speech={line} voice={voice}/>
 </svml>
 `);
   await hypit(["check", "families.svml", "--project", project]);

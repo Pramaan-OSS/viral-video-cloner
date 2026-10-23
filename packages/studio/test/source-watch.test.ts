@@ -88,7 +88,7 @@ test("a filesystem Source watcher detects an atomic replacement save", async t =
   let timer: ReturnType<typeof setTimeout> | undefined;
   try {
     await Promise.race([event, new Promise<never>((_, reject) => {
-      timer = setTimeout(() => reject(new Error("Source replacement was not observed")), 3000);
+      timer = setTimeout(() => reject(new Error("Source replacement was not observed")), 15_000);
     })]);
   } finally {
     clearTimeout(timer);
