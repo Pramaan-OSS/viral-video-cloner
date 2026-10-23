@@ -26,9 +26,9 @@ jobs:
       matrix:
         check: [typecheck, test, build]
     steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: pnpm
@@ -48,7 +48,7 @@ jobs:
         # Keep Chrome's sandbox enabled; permit user namespaces on this test runner.
         run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - if: matrix.check == 'test'
-        uses: astral-sh/setup-uv@v6
+        uses: astral-sh/setup-uv@v7
         with:
           version: 0.11.26
           enable-cache: true
@@ -74,8 +74,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
         with:
           version: 0.11.26
           enable-cache: true
